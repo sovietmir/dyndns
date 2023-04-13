@@ -5,7 +5,7 @@
  * 
  * The DNS records that will be changed are defined as zones in the config.inc  
  */
-include_once("config.inc");
+include_once("common.inc");
 if(Common::ie("ip",$_REQUEST)==Common::ie("REMOTE_ADDR",$_SERVER)){
   $ip = Common::ie("ip",$_REQUEST);
   $timestamp = Common::ie("timestamp",$_REQUEST);
@@ -30,15 +30,15 @@ if(Common::ie("ip",$_REQUEST)==Common::ie("REMOTE_ADDR",$_SERVER)){
   else {
     $data = "server localhost\n";
     $data .= "debug true\n";
-    foreach($CFG->zones AS $zone){
-      $domain = ie("domain", $zone);
+    foreach($CFG->zones AS $key=>$zone){
+      $domain = Common::ie("domain", $zone, $key);
       if($domain!=""){
         $data .= "zone ".$domain.".\n";
-        foreach(ie("subdomains", $zone, array()) AS $subdomain){
+        foreach(Common::ie("subdomains", $zone, array()) AS $subdomain){
           $data .= "update delete ".$subdomain.".".$domain.". A\n";
           $data .= "update add ".$subdomain.".".$domain.". 300 IN A ".$ip."\n";
         }
-        if(ie("setDomain", $zone)=="true"){
+        if(Common::ie("setDomain", $zone)=="true"){
           $data .= "update delete ".$domain.". A\n";
           $data .= "update add ".$domain.". 300 IN A ".$ip."\n";
         }

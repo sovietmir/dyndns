@@ -7,13 +7,19 @@
  * 
  */
 if (php_sapi_name() !== 'cli') {
-  die('This script can only be run from the command line.');
+  die("This script can only be run from the command line.".PHP_EOL);
 }
 
-include_once("config.inc");
+include_once("common.inc");
+
+print var_export($CFG, true).PHP_EOL;
+
 
 if(Common::ie("privateKey", $CFG)=="") {
-  die('Edit config.inc and set some value to the $CFG->privateKey attribute.');
+  $helpMsg = "The value of \$CFG->privateKey is not set.".PHP_EOL;
+  $helpMsg .= "In order to set the private key, run the command `php privatekeyGeneration.php > ".ie("privateKeyFilename", $CFG)."`.".PHP_EOL;
+  $helpMsg .= "Note that, you must share the ".ie("privateKeyFilename", $CFG)." file with the server — ".ie("server", $CFG).".".PHP_EOL;
+  die($helpMsg);
 }
 
 $CFG->logger = null;
