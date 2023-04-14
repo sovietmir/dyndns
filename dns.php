@@ -1,9 +1,15 @@
 <?php
 /**
- * Change the DNS records, using the IP from the request. 
- * The request must contain the ip.
+ * On the external server, a Domain Name System (named-bind) allows updates 
+ * from localhost for configured zones (domains). Additionally, the external 
+ * server has an Apache web server with PHP that serves URIs ip.php and dns.php. 
+ * The ip.php script returns the IP of the request, while dns.php (this script) 
+ * accepts a parameter named 'ip' in the request. It checks the value of the 
+ * 'ip' parameter with the request's IP and, based on the configuration stored 
+ * in $CFG->zones (defined in the conf/zones.ini file), creates a text file with 
+ * appropriate nsupdate commands and executes the nsupdate command with the 
+ * argument being that file.
  * 
- * The DNS records that will be changed are defined as zones in the config.inc  
  */
 include_once("common.inc");
 if(Common::ie("ip",$_REQUEST)==Common::ie("REMOTE_ADDR",$_SERVER)){
@@ -57,7 +63,7 @@ if(Common::ie("ip",$_REQUEST)==Common::ie("REMOTE_ADDR",$_SERVER)){
       }
       fclose($fp);
       $CFG->log("nsupdate responded ".$response,0);
-      //todo handle the response, ie catch the error response or success
+      //Handle the response, i.e., catch the error response or success
       if(preg_match("/status: NOERROR/", $response))
         print "ok";
       else 

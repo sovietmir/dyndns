@@ -1,9 +1,13 @@
 #!/php/bin/php
 <?php
 /**
- * cli stand alone php script, daemon style (runs for ever), that checks the IP, by hitting server/ip.php. 
- * If the IP have changed from the last time (or it is the first time) it hits the server/dns.ph, thus informing it of the current IP and asking to set it 
- * for the list of configured zones. 
+ * On the home server, the client.php script is executed as a CLI script. 
+ * The client.php script executes a permanent loop in which it periodically 
+ * (every 5 minutes) performs the following action: It makes an HTTP GET request 
+ * to the external server's ip.php to get knowledge of the current home server IP. 
+ * It keeps a register of the previously obtained knowledge of the home server IP. 
+ * If the IP changes, it makes an HTTP GET request to the external server's 
+ * dns.php with the new IP as a parameter.
  * 
  */
 if (php_sapi_name() !== 'cli') {
